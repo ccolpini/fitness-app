@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { SESSIONS } from '../data/exercises';
 import { PHASE_CONFIG, DAY_NAMES, SESSION_NAMES, getPhaseForWeek } from '../data/types';
@@ -23,10 +23,14 @@ function ExerciseCard({ exercise, phase, week, date, dayIndex, logs }: {
   const repsLabel = exercise.reps[phase];
 
   const existingLog = logs?.find(l => l.exerciseId === exercise.id);
-  const [weights, setWeights] = useState<number[]>(() => {
-    if (existingLog) return existingLog.sets.map(s => s.weight);
-    return Array(setsCount).fill(0);
-  });
+  const [weights, setWeights] = useState<number[]>(() => Array(setsCount).fill(0));
+
+  // Sync weights from DB once logs load (they're undefined on first render)
+  useEffect(() => {
+    if (existingLog) {
+      setWeights(existingLog.sets.map(s => s.weight));
+    }
+  }, [existingLog?.sets.map(s => s.weight).join(',')]);
 
   const handleWeightChange = useCallback(async (setIndex: number, value: string) => {
     const num = parseFloat(value) || 0;

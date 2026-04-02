@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { pfExercises, hipExercises } from '../data/prehab';
 import { getPhaseForWeek } from '../data/types';
@@ -9,12 +9,10 @@ function PFCard({ exercise, phase }: { exercise: PFExercise; phase: Phase }) {
   const [open, setOpen] = useState(false);
   const note = usePFNote(exercise.id);
   const [noteText, setNoteText] = useState('');
-  const [noteLoaded, setNoteLoaded] = useState(false);
 
-  if (note && !noteLoaded) {
-    setNoteText(note.note);
-    setNoteLoaded(true);
-  }
+  useEffect(() => {
+    if (note) setNoteText(note.note);
+  }, [note?.note]);
 
   const handleNoteSave = useCallback(async (text: string) => {
     setNoteText(text);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store/useStore';
 import { useWeeklyCheckins, useAllWorkoutLogs, saveWeeklyCheckin, useCheckinForWeek } from '../hooks/useDB';
@@ -9,16 +9,15 @@ function CheckInForm({ week }: { week: number }) {
     weight: 0, waist: 0, hip: 0, thigh: 0,
     protein: 0, energy: 3, hipPain: 0, pr: '', notes: '',
   });
-  const [loaded, setLoaded] = useState(false);
-
-  if (existing && !loaded) {
-    setForm({
-      weight: existing.weight, waist: existing.waist, hip: existing.hip,
-      thigh: existing.thigh, protein: existing.protein, energy: existing.energy,
-      hipPain: existing.hipPain, pr: existing.pr, notes: existing.notes,
-    });
-    setLoaded(true);
-  }
+  useEffect(() => {
+    if (existing) {
+      setForm({
+        weight: existing.weight, waist: existing.waist, hip: existing.hip,
+        thigh: existing.thigh, protein: existing.protein, energy: existing.energy,
+        hipPain: existing.hipPain, pr: existing.pr, notes: existing.notes,
+      });
+    }
+  }, [existing?.week]);
 
   const handleSave = async () => {
     await saveWeeklyCheckin({ week, ...form });
