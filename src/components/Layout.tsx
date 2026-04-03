@@ -20,7 +20,7 @@ export function Layout() {
 
   return (
     <div className="flex flex-col h-full bg-bg">
-      <div key={activeTab} className="flex-1 overflow-y-auto scrollbar-hide animate-fade-in">
+      <div key={activeTab} className="flex-1 overflow-y-auto scrollbar-hide animate-slide-up">
         <TabComponent />
       </div>
       <BottomNav />
