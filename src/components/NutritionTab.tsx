@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { NUTRITION } from '../data/nutrition';
 import { ProgressRing } from './ui';
+import type { Meal } from '../data/types';
 
 type NutritionMode = 'trainingDay' | 'restDay' | 'dietBreak' | 'deload';
 
@@ -11,10 +13,44 @@ const MODE_CONFIG: Record<NutritionMode, { label: string; color: string; icon: s
   deload: { label: 'Deload', color: '#A855F7', icon: 'M19 9l-7 7-7-7' },
 };
 
+const FASTED_KEY = 'caro-recomp-fasted-training';
+
+function redistributeMeals(meals: Meal[]): Meal[] {
+  if (meals.length < 2) return meals;
+  const removed = meals[0];
+  const remaining = meals.slice(1);
+  const perMealExtra = {
+    calories: Math.round(removed.calories / remaining.length),
+    protein: Math.round(removed.protein / remaining.length),
+    carbs: Math.round(removed.carbs / remaining.length),
+    fats: Math.round(removed.fats / remaining.length),
+  };
+
+  return remaining.map((meal, i) => ({
+    ...meal,
+    name: i === 0 ? 'Post-Workout Meal' : meal.name,
+    time: i === 0 ? '~60-90 min post' : meal.time,
+    calories: meal.calories + perMealExtra.calories,
+    protein: meal.protein + perMealExtra.protein,
+    carbs: meal.carbs + perMealExtra.carbs,
+    fats: meal.fats + perMealExtra.fats,
+  }));
+}
+
 export function NutritionTab() {
   const { nutritionMode, setNutritionMode, currentWeek } = useStore();
   const macros = NUTRITION[nutritionMode];
   const cfg = MODE_CONFIG[nutritionMode];
+
+  const [fasted, setFasted] = useState(() => {
+    try { return localStorage.getItem(FASTED_KEY) === 'true'; } catch { return false; }
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem(FASTED_KEY, String(fasted)); } catch {}
+  }, [fasted]);
+
+  const displayMeals = fasted ? redistributeMeals(macros.meals) : macros.meals;
 
   const macroItems = [
     { label: 'Protein', value: macros.protein, max: 250, unit: 'g', color: '#00D4FF' },
@@ -59,9 +95,48 @@ export function NutritionTab() {
           })}
         </div>
 
+        {/* Fasted Training Toggle */}
+        <div className="flex items-center justify-between rounded-xl p-3 mb-4"
+          style={{ background: '#141414', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF2D78" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span className="text-xs font-semibold text-white">Fasted Training</span>
+          </div>
+          <button
+            onClick={() => setFasted(!fasted)}
+            className="relative w-11 h-6 rounded-full transition-colors duration-300"
+            style={{ backgroundColor: fasted ? '#FF2D78' : '#333' }}
+          >
+            <div
+              className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300"
+              style={{ transform: fasted ? 'translateX(22px)' : 'translateX(2px)' }}
+            />
+          </button>
+        </div>
+
+        {/* Fasted Training Note */}
+        {fasted && (
+          <div className="relative overflow-hidden rounded-xl p-4 mb-4 animate-scale-in"
+            style={{ background: '#141414', border: '1px solid rgba(255,45,120,0.2)', boxShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
+            <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20" style={{ backgroundColor: '#FF2D78' }} />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,45,120,0.15)', color: '#FF2D78' }}>FASTED</span>
+                <h3 className="text-sm font-bold text-white">Training Protocol</h3>
+              </div>
+              <p className="text-xs leading-relaxed" style={{ color: '#999' }}>
+                Training fasted · Break your fast within 60–90 min post-session with a high-protein meal. Hit 40–50g protein in your first meal to blunt muscle protein breakdown.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Calorie Hero */}
         <div className="flex justify-center mb-5">
-          <ProgressRing radius={60} stroke={6} progress={(macros.calories / 3000) * 100} color={cfg.color}>
+          <ProgressRing radius={60} stroke={6} progress={(macros.calories / 2500) * 100} color={cfg.color}>
             <div className="text-center">
               <div className="text-2xl font-bold" style={{ color: cfg.color }}>{macros.calories}</div>
               <div className="text-[9px] font-semibold tracking-wider" style={{ color: '#666' }}>KCAL</div>
@@ -107,9 +182,9 @@ export function NutritionTab() {
                 <h3 className="text-sm font-bold">Diet Break</h3>
               </div>
               <ul className="space-y-1 text-xs" style={{ color: '#666' }}>
-                <li className="flex items-start gap-1.5"><span className="text-amber">•</span>Raise to maintenance ~2700 kcal</li>
-                <li className="flex items-start gap-1.5"><span className="text-amber">•</span>Increase carbs for hormonal reset</li>
-                <li className="flex items-start gap-1.5"><span className="text-amber">•</span>Keep protein at minimum 160g</li>
+                <li className="flex items-start gap-1.5"><span className="text-amber">•</span>Raise to ~1,950 kcal for hormonal reset</li>
+                <li className="flex items-start gap-1.5"><span className="text-amber">•</span>Increase carbs while keeping protein high</li>
+                <li className="flex items-start gap-1.5"><span className="text-amber">•</span>Keep protein at minimum 130g</li>
                 <li className="flex items-start gap-1.5"><span className="text-amber">•</span>5-7 days to reverse metabolic adaptation</li>
               </ul>
             </div>
@@ -126,7 +201,7 @@ export function NutritionTab() {
                 <h3 className="text-sm font-bold">Recovery Nutrition</h3>
               </div>
               <ul className="space-y-1 text-xs" style={{ color: '#666' }}>
-                <li className="flex items-start gap-1.5"><span className="text-purple">•</span>Moderate calories at maintenance</li>
+                <li className="flex items-start gap-1.5"><span className="text-purple">•</span>Same as training days ~1,720 kcal</li>
                 <li className="flex items-start gap-1.5"><span className="text-purple">•</span>High protein for recovery</li>
                 <li className="flex items-start gap-1.5"><span className="text-purple">•</span>Focus on whole foods + micronutrients</li>
                 <li className="flex items-start gap-1.5"><span className="text-purple">•</span>Prioritize sleep and hydration</li>
@@ -138,11 +213,11 @@ export function NutritionTab() {
         {/* Meal Plan */}
         <div className="flex items-center justify-between mb-3">
           <h2 className="section-label">Meal Plan</h2>
-          <span className="text-xs" style={{ color: '#666' }}>{macros.meals.length} meals</span>
+          <span className="text-xs" style={{ color: '#666' }}>{displayMeals.length} meals</span>
         </div>
 
         <div className="stagger-children">
-          {macros.meals.map((meal, i) => (
+          {displayMeals.map((meal, i) => (
             <div key={i} className="relative overflow-hidden rounded-xl p-4 mb-2"
               style={{ background: '#141414', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
               {/* Time indicator */}
