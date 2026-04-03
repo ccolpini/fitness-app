@@ -15,6 +15,21 @@ export function useWorkoutLogsByExercise(exerciseId: string) {
   );
 }
 
+/** Returns the most recent log for this exercise BEFORE the given date */
+export function useLastLogForExercise(exerciseId: string, beforeDate: string) {
+  return useLiveQuery(
+    () => db.workoutLogs
+      .where('exerciseId').equals(exerciseId)
+      .filter(log => log.date < beforeDate)
+      .toArray()
+      .then(logs => {
+        if (logs.length === 0) return undefined;
+        return logs.sort((a, b) => b.date.localeCompare(a.date))[0];
+      }),
+    [exerciseId, beforeDate]
+  );
+}
+
 export function useAllWorkoutLogs() {
   return useLiveQuery(() => db.workoutLogs.toArray());
 }
