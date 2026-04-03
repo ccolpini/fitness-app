@@ -12,36 +12,35 @@ export function BottomNav() {
   const { activeTab, setActiveTab } = useStore();
 
   return (
-    <nav className="flex-shrink-0 relative bg-surface/80 backdrop-blur-xl border-t border-white/8 pb-[env(safe-area-inset-bottom)]">
-      <div className="flex items-center justify-around px-1" style={{ height: '64px' }}>
+    <nav
+      className="flex-shrink-0 pb-[env(safe-area-inset-bottom)]"
+      style={{
+        background: 'rgba(10, 10, 10, 0.95)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+      }}
+    >
+      <div className="flex items-center justify-around px-1" style={{ height: '60px' }}>
         {tabs.map(tab => {
           const active = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 py-2 transition-all duration-300 active:scale-90 ${
-                active ? '' : 'text-secondary'
-              }`}
+              className="flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-all duration-200 active:scale-90"
             >
-              {/* Active glow background */}
-              {active && (
-                <div className="absolute inset-x-2 -top-1 bottom-2 rounded-2xl animate-scale-in"
-                  style={{ background: 'radial-gradient(ellipse at top, rgba(255,45,120,0.15) 0%, transparent 70%)' }}
-                />
-              )}
-
-              {/* Top indicator bar */}
-              {active && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-accent-pink transition-all" />
-              )}
-
-              <div className="relative">
-                <svg className={`w-5 h-5 transition-all duration-300 ${active ? 'text-accent-pink scale-110' : ''}`} fill="currentColor" viewBox="0 0 24 24">
-                  <path d={tab.icon} />
-                </svg>
-              </div>
-              <span className={`relative text-[10px] font-bold tracking-wider transition-colors duration-300 ${active ? 'text-accent-pink' : ''}`}>
+              <svg
+                className="w-5 h-5 transition-colors duration-200"
+                fill={active ? '#FF2D78' : '#444'}
+                viewBox="0 0 24 24"
+              >
+                <path d={tab.icon} />
+              </svg>
+              <span
+                className="text-[10px] font-bold tracking-widest transition-colors duration-200"
+                style={{ color: active ? '#FF2D78' : '#444' }}
+              >
                 {tab.label}
               </span>
             </button>

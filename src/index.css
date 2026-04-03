@@ -3,9 +3,9 @@
 @theme {
   --color-bg: #0A0A0A;
   --color-surface: #141414;
-  --color-surface-light: #1A1A1A;
-  --color-primary: #FFFFFF;
-  --color-secondary: #888888;
+  --color-surface-light: #111111;
+  --color-primary: #E0E0E0;
+  --color-secondary: #666666;
   --color-accent-pink: #FF2D78;
   --color-accent-cyan: #00D4FF;
   --color-success: #00FF88;
@@ -27,12 +27,13 @@ html, body, #root {
 body {
   margin: 0;
   font-family: var(--font-family-body);
-  background-color: var(--color-bg);
-  color: var(--color-primary);
+  background-color: #0A0A0A;
+  color: #E0E0E0;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-heading);
+  letter-spacing: -0.02em;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -45,20 +46,30 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+/* ── Card System ── */
 .card {
-  background-color: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   padding: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 .card-light {
-  background-color: var(--color-surface-light);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   padding: 16px;
 }
 
+.glass-card {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Pills & Labels ── */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -69,6 +80,34 @@ input[type="number"] {
   letter-spacing: 0.05em;
 }
 
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+/* ── Dark pill inputs ── */
+.pill-input {
+  background: #1E1E1E;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  color: #E0E0E0;
+  text-align: center;
+  font-weight: 500;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.pill-input:focus {
+  outline: none;
+  border-color: rgba(255, 45, 120, 0.4);
+  background: #222;
+}
+.pill-input::placeholder {
+  color: #444;
+}
+
+/* ── Animations ── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -79,6 +118,21 @@ input[type="number"] {
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes expand-height {
+  from { max-height: 0; opacity: 0; }
+  to { max-height: 600px; opacity: 1; }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
 }
@@ -87,59 +141,20 @@ input[type="number"] {
   animation: scaleIn 0.2s ease-out forwards;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Gradient header backgrounds */
-.gradient-header-pink {
-  background: linear-gradient(135deg, #FF2D78 0%, #FF2D7833 50%, transparent 100%);
-}
-.gradient-header-cyan {
-  background: linear-gradient(135deg, #00D4FF 0%, #00D4FF33 50%, transparent 100%);
-}
-
-/* Glassmorphism card */
-.glass-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-}
-
-/* Shimmer loading effect */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.shimmer {
-  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-/* Slide animations for tab switching */
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-slide-in {
-  animation: slideInRight 0.3s ease-out forwards;
-}
 .animate-slide-up {
   animation: slideInUp 0.35s ease-out forwards;
 }
 
-/* Staggered children animation */
+.animate-expand {
+  animation: expand-height 0.35s ease-out forwards;
+  overflow: hidden;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Staggered children ── */
 .stagger-children > * {
   opacity: 0;
   animation: slideInUp 0.3s ease-out forwards;
@@ -155,21 +170,11 @@ input[type="number"] {
 .stagger-children > *:nth-child(9) { animation-delay: 400ms; }
 .stagger-children > *:nth-child(10) { animation-delay: 450ms; }
 
-/* Gradient text */
-.gradient-text-pink {
-  background: linear-gradient(135deg, #FF2D78, #FF6EA4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ── Scrollbar ── */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
-.gradient-text-cyan {
-  background: linear-gradient(135deg, #00D4FF, #7DE8FF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Active nav glow */
-.nav-glow {
-  box-shadow: 0 -4px 20px rgba(255, 45, 120, 0.15);
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
