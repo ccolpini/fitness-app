@@ -55,9 +55,19 @@ export const upperAExercises: Exercise[] = [
 // ── LOWER A (Tuesday) ──
 export const lowerAExercises: Exercise[] = [
   {
-    id: 'la-squat', name: 'Barbell Back Squat', equipment: 'Barbell + Rack',
-    group: 'main', sets: p('3','4','4','2','4'), reps: p('8-10','6-8','5-6','10-12','4-6'),
-    cues: ['Brace core, big breath', 'Break at hips and knees', 'Depth: hip crease below knee', 'Drive through full foot'],
+    id: 'la-goblet', name: 'Goblet Squat', equipment: 'Dumbbell / Kettlebell',
+    group: 'main', sets: p('3','4','4','2','4'), reps: p('10','6-8','5-6','10-12','4-6'),
+    cues: ['Hold weight at chest', 'Elbows inside knees at bottom', 'Focus on depth and upright torso', 'Elevate heels slightly if mobility limited'],
+  },
+  {
+    id: 'la-boxsquat', name: 'Box Squat', equipment: 'Box / Bench (BW or light KB)',
+    group: 'main', sets: p('3','0','0','0','0'), reps: p('8','—','—','—','—'),
+    cues: ['Sit back to parallel box', 'Pause 1s on box — no bouncing', 'Drive up through full foot', 'Teaches hip hinge into squat without forward knee drift'],
+  },
+  {
+    id: 'la-stepup', name: 'Step-Up (tall box)', equipment: 'Box / Bench (BW or DB)',
+    group: 'main', sets: p('3','0','0','0','0'), reps: p('10/side','—','—','—','—'),
+    cues: ['Full hip extension at top', 'All load through front leg', 'Control the step down', 'Replaces split squat while hip fires correctly'],
   },
   {
     id: 'la-rdl', name: 'Romanian Deadlift', equipment: 'Barbell',
@@ -143,14 +153,19 @@ export const upperBExercises: Exercise[] = [
 // ── LOWER B + ABS (Friday) ──
 export const lowerBExercises: Exercise[] = [
   {
-    id: 'lb-deadlift', name: 'Conventional Deadlift', equipment: 'Barbell',
-    group: 'main', sets: p('3','4','4','2','4'), reps: p('6-8','5-6','4-5','8-10','3-5'),
-    cues: ['Feet hip width', 'Bar over mid-foot', 'Chest up, lats tight', 'Push floor away'],
+    id: 'lb-trapbar', name: 'Trap Bar Deadlift', equipment: 'Trap Bar (or Dumbbells)',
+    group: 'main', sets: p('3','4','4','2','4'), reps: p('8','5-6','4-5','8-10','3-5'),
+    cues: ['Step inside trap bar', 'Hips back, chest up', 'Drive through full foot', 'Lockout with glutes — more upright torso than conventional'],
   },
   {
-    id: 'lb-bulgsplit', name: 'Bulgarian Split Squat', equipment: 'Dumbbells + Bench',
-    group: 'main', sets: p('3','3','4','2','4'), reps: p('10/leg','8/leg','8/leg','12/leg','6-8/leg'),
-    cues: ['Rear foot on bench', 'Torso upright', 'Front knee tracks toe', 'Drive through front heel'],
+    id: 'lb-rfess', name: 'Rear-Foot Elevated Split Squat', equipment: 'Bench (BW → light DB)',
+    group: 'main', sets: p('3','3','4','2','4'), reps: p('8/side','8/leg','8/leg','12/leg','6-8/leg'),
+    cues: ['Rear foot on bench, laces down', 'Torso upright, core braced', 'Front knee tracks toe', 'Ph1: bodyweight only — groove the pattern'],
+  },
+  {
+    id: 'lb-laterallunge', name: 'Lateral Lunge', equipment: 'Bodyweight (or light DB)',
+    group: 'main', sets: p('3','0','0','0','0'), reps: p('10/side','—','—','—','—'),
+    cues: ['Wide step to the side', 'Sit hips back on working leg', 'Keep trailing leg straight', 'Drives hip abductors — supports hip rehab'],
   },
   {
     id: 'lb-hipthrust', name: 'Barbell Hip Thrust', equipment: 'Barbell + Bench',

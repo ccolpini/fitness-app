@@ -62,7 +62,8 @@ function ExerciseDetail({ exercise, phase }: { exercise: Exercise; phase: Phase 
 export function ProgrammeTab() {
   const { selectedWeek, setSelectedWeek, selectedDay, setSelectedDay } = useStore();
   const phase = getPhaseForWeek(selectedWeek);
-  const exercises = SESSIONS[selectedDay] || [];
+  // Filter out exercises with 0 sets in the current phase (Ph1-only exercises etc.)
+  const exercises = (SESSIONS[selectedDay] || []).filter(ex => ex.sets[phase] !== '0');
   const phaseConfig = PHASE_CONFIG[selectedWeek];
 
   const grouped = exercises.reduce<Record<string, Exercise[]>>((acc, ex) => {

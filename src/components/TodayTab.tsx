@@ -196,7 +196,9 @@ export function TodayTab() {
   const todayDate = getTodayDate();
   const phase = getPhaseForWeek(currentWeek);
   const phaseConfig = PHASE_CONFIG[currentWeek];
-  const exercises = SESSIONS[dayIndex] || [];
+  const allExercises = SESSIONS[dayIndex] || [];
+  // Filter out exercises with 0 sets in the current phase (Ph1-only exercises etc.)
+  const exercises = allExercises.filter(ex => ex.sets[phase] !== '0');
   const logs = useWorkoutLogs(todayDate);
   const completed = useCompletedSession(todayDate);
 
